@@ -21,7 +21,6 @@ experiment runs), randomly select a given number of images with
 a certain label, and shuffle the final dataset. This is a necessary
 step because in the original dataset, 0th-order modes (label=0)
 greatly outnumbers higher-order modes (label=1).
-
 This code also includes cropping and rebinning of the images.
 
 * residue_networks.py, a residual deep neural network.

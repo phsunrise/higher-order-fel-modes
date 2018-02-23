@@ -23,9 +23,9 @@ step because in the original dataset, 0th-order modes (label=0)
 greatly outnumbers higher-order modes (label=1).
 This code also includes cropping and resizing of the images.
 
-* residue_networks.py, a residual deep neural network.
+* [residue_networks.py](residue_networks.py), a residual deep neural network.
 
-* simple.py, a simpler convolutional neural network.
+* [simple.py](simple.py), a simpler convolutional neural network.
 
 ## Unsupervised learning
 We will use an autoencoder network for unsupervised learning.

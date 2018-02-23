@@ -14,14 +14,14 @@ The keras library is required to use this repo.
 ## Supervised learning
 The supervised learning codes include the following:
 
-* GUI_label.py, a python GUI for users to label the images.
+* [GUI_label.py](GUI_label.py), a python GUI for users to label the images.
 
-* combine_runs.py, a code to combine the images (from different
+* [combine_runs.py](combine_runs.py), a code to combine the images (from different
 experiment runs), randomly select a given number of images with 
 a certain label, and shuffle the final dataset. This is a necessary
 step because in the original dataset, 0th-order modes (label=0)
 greatly outnumbers higher-order modes (label=1).
-This code also includes cropping and rebinning of the images.
+This code also includes cropping and resizing of the images.
 
 * residue_networks.py, a residual deep neural network.
 

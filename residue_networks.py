@@ -24,7 +24,7 @@ K.set_learning_phase(1)
 
 def identity_block(X, f, filters, stage, block):
     """
-    Implementation of the identity block as defined in Figure 3
+    Implementation of the identity block
     
     Arguments:
     X -- input tensor of shape (m, n_H_prev, n_W_prev, n_C_prev)
@@ -69,10 +69,9 @@ def identity_block(X, f, filters, stage, block):
       
     return X
 
-
 def convolutional_block(X, f, filters, stage, block, s = 2):
     """
-    Implementation of the convolutional block as defined in Figure 4
+    Implementation of the convolutional block
     
     Arguments:
     X -- input tensor of shape (m, n_H_prev, n_W_prev, n_C_prev)
@@ -122,11 +121,13 @@ def convolutional_block(X, f, filters, stage, block, s = 2):
         
     return X
 
-def ResNet50(input_shape = (64,64,1), classes = 1):
+def ResNet(input_shape = (100,100,1), classes = 1):
     """
-    Implementation of the popular ResNet50 the following architecture:
-    CONV2D -> BATCHNORM -> RELU -> MAXPOOL -> CONVBLOCK -> IDBLOCK*2 -> CONVBLOCK -> IDBLOCK*3
-    -> CONVBLOCK -> IDBLOCK*5 -> CONVBLOCK -> IDBLOCK*2 -> AVGPOOL -> TOPLAYER
+    Architecture: 
+    CONV2D -> BATCHNORM -> RELU -> MAXPOOL -> 
+    CONVBLOCK -> IDBLOCK*2 -> 
+    CONVBLOCK -> IDBLOCK*3 -> 
+    AVGPOOL -> TOPLAYER
 
     Arguments:
     input_shape -- shape of the images of the dataset
@@ -138,7 +139,6 @@ def ResNet50(input_shape = (64,64,1), classes = 1):
     
     # Define the input as a tensor with shape input_shape
     X_input = Input(input_shape)
-
     
     # Zero-Padding
     X = ZeroPadding2D((3, 3))(X_input)
@@ -154,30 +154,27 @@ def ResNet50(input_shape = (64,64,1), classes = 1):
     X = identity_block(X, 3, [16, 16, 64], stage=2, block='b')
     X = identity_block(X, 3, [16, 16, 64], stage=2, block='c')
 
-    ### START CODE HERE ###
-
     # Stage 3
     X = convolutional_block(X, f = 3, filters = [32, 32, 128], stage = 3, block='a', s = 2)
     X = identity_block(X, 3, [32, 32, 128], stage=3, block='b')
     X = identity_block(X, 3, [32, 32, 128], stage=3, block='c')
     X = identity_block(X, 3, [32, 32, 128], stage=3, block='d')
-    '''
-    # Stage 4
-    X = convolutional_block(X, f = 3, filters = [256, 256, 1024], stage = 4, block='a', s = 2)
-    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='b')
-    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='c')
-    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='d')
-    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='e')
-    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='f')
 
-    # Stage 5
-    X = convolutional_block(X, f = 3, filters = [512, 512, 2048], stage = 5, block='a', s = 2)
-    X = identity_block(X, 3, [512, 512, 2048], stage=5, block='b')
-    X = identity_block(X, 3, [512, 512, 2048], stage=5, block='c')
-    '''
+#    # Stage 4
+#    X = convolutional_block(X, f = 3, filters = [256, 256, 1024], stage = 4, block='a', s = 2)
+#    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='b')
+#    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='c')
+#    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='d')
+#    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='e')
+#    X = identity_block(X, 3, [256, 256, 1024], stage=4, block='f')
+#
+#    # Stage 5
+#    X = convolutional_block(X, f = 3, filters = [512, 512, 2048], stage = 5, block='a', s = 2)
+#    X = identity_block(X, 3, [512, 512, 2048], stage=5, block='b')
+#    X = identity_block(X, 3, [512, 512, 2048], stage=5, block='c')
+
     # AVGPOOL
     X = AveragePooling2D(pool_size=(2,2),name ="avg_pool")(X)
-    
 
     # output layer
     X = Flatten()(X)
@@ -201,17 +198,12 @@ with h5py.File(filename,'r') as f:
 classes = Y_train.max()
 input_shape = (np.shape(X_train)[1],np.shape(X_train)[2],1)
 
-model = ResNet50(input_shape = input_shape, classes = classes)
+model = ResNet(input_shape = input_shape, classes = classes)
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-
-# Normalize image vectors let's see whether we need that
-#X_train = X_train_orig/255.
-#X_test = X_test_orig/255.
-
 # Convert training and test labels to one hot matrices
-#Y_train = convert_to_one_hot(Y_train_orig, 6).T
-#Y_test = convert_to_one_hot(Y_test_orig, 6).T
+#Y_train = convert_to_one_hot(Y_train_orig, classes).T
+#Y_test = convert_to_one_hot(Y_test_orig, classes).T
 
 print ("number of training examples = " + str(X_train.shape[0]))
 print ("number of test examples = " + str(X_test.shape[0]))
@@ -219,6 +211,8 @@ print ("X_train shape: " + str(X_train.shape))
 print ("Y_train shape: " + str(Y_train.shape))
 print ("X_test shape: " + str(X_test.shape))
 print ("Y_test shape: " + str(Y_test.shape))
+
+# class to record loss history
 class LossHistory(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.losses = []
@@ -239,6 +233,8 @@ model.fit(X_train, Y_train, epochs = 10, \
 preds = model.evaluate(X_test, Y_test)
 print ("Loss = " + str(preds[0]))
 print ("Test Accuracy = " + str(preds[1]))
+
+# save model
 model.save("classifier.h5")
 
 # save history

@@ -94,14 +94,9 @@ input_shape = (np.shape(X_train)[1],np.shape(X_train)[2],1)
 model = SimpleNet(input_shape = input_shape, classes = classes)
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-
-# Normalize image vectors let's see whether we need that
-#X_train = X_train_orig/255.
-#X_test = X_test_orig/255.
-
 # Convert training and test labels to one hot matrices
-#Y_train = convert_to_one_hot(Y_train_orig, 6).T
-#Y_test = convert_to_one_hot(Y_test_orig, 6).T
+#Y_train = convert_to_one_hot(Y_train_orig, classes).T
+#Y_test = convert_to_one_hot(Y_test_orig, classes).T
 
 print ("number of training examples = " + str(X_train.shape[0]))
 print ("number of test examples = " + str(X_test.shape[0]))
@@ -109,6 +104,8 @@ print ("X_train shape: " + str(X_train.shape))
 print ("Y_train shape: " + str(Y_train.shape))
 print ("X_test shape: " + str(X_test.shape))
 print ("Y_test shape: " + str(Y_test.shape))
+
+# class to record loss history
 class LossHistory(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.losses = []
@@ -129,8 +126,10 @@ model.fit(X_train, Y_train, epochs = 50, \
 preds = model.evaluate(X_test, Y_test)
 print ("Loss = " + str(preds[0]))
 print ("Test Accuracy = " + str(preds[1]))
+
+# save model
 model.save("classifier.h5")
 
-# save history
+# save history for analysis
 np.savez("history.npz", losses=history.losses, accuracy=history.accuracy, \
          val_losses=history.val_losses, val_accuracy=history.val_accuracy)

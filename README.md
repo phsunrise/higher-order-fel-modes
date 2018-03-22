@@ -28,5 +28,8 @@ This code also includes cropping and resizing of the images.
 * [simple.py](simple.py), a simpler convolutional neural network.
 
 ## Unsupervised learning
-We will use an autoencoder network for unsupervised learning.
-To be continued...
+We use an autoencoder network for unsupervised learning. The codes include:
+
+* [autoencoder.py](autoencoder.py): NN architecture and training 
+
+* [autoencoder_predict.py](autoencoder_predict.py): obtain the code for each image, compare input and output images, and visualize each component of the code
